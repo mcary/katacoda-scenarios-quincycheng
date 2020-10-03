@@ -20,3 +20,13 @@ cd /tmp
 git clone https://github.com/QuincyChengAtWork/conjur-oss-k8s-authn-katacoda.git
 wget https://github.com/QuincyChengAtWork/conjur-oss-k8s-authn-katacoda/archive/v1.0.zip
 unzip v1.0.zip
+
+# This script will be run when the container starts, before the user connects.
+cat << 'EOF' > /opt/configure-environment.sh
+#!/bin/bash
+kubeadm init --token=102952.1a7dd4cc8d1f4cc5 --kubernetes-version $(kubeadm version -o short)
+mkdir -p $HOME/.kube
+cp -v /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+EOF
+chmod +x /opt/configure-environment.sh
